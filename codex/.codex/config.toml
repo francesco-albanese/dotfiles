@@ -30,3 +30,6 @@ enabled = true
 [tui]
 status_line = ["model-with-reasoning", "current-dir", "model", "project-name", "git-branch", "permissions", "context-remaining", "context-used", "context-window-size", "used-tokens"]
 status_line_use_colors = true
+
+[projects."/Users/francescoalbanese"]
+trust_level = "trusted"
