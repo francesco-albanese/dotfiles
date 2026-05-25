@@ -4,6 +4,7 @@
 *~
 
 # Codex runtime/state
+codex/.codex/config.toml
 codex/.codex/auth.json
 codex/.codex/history.jsonl
 codex/.codex/sessions/
