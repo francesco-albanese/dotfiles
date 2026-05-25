@@ -1,0 +1,153 @@
+name: Terraform Deploy
+
+on:
+  push:
+    branches: [main]
+    paths: [terraform/**]
+  pull_request:
+    paths: [terraform/**]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        type: choice
+        options:
+          - sandbox
+          - staging
+          - uat
+          - production
+        default: 'sandbox'
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+env:
+  AWS_REGION: eu-west-2
+
+concurrency:
+  group: terraform-deploy
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    name: Terraform Plan
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment || 'sandbox' }}
+    env:
+      ACCOUNT: ${{ inputs.environment || 'sandbox' }}
+    outputs:
+      exitcode: ${{ steps.plan.outputs.exitcode }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: '1.14.8'
+
+      - name: Terraform Init
+        run: make environmental-init ACCOUNT=${{ env.ACCOUNT }} AWS_PROFILE=
+
+      - name: Terraform Validate
+        run: make environmental-validate AWS_PROFILE=
+
+      - name: Terraform Plan
+        id: plan
+        run: |
+          set +e
+          make environmental-plan ACCOUNT=${{ env.ACCOUNT }} AWS_PROFILE= TF_FLAGS="-detailed-exitcode -no-color" 2>&1 | tee plan_output.txt
+          echo "exitcode=$?" >> "$GITHUB_OUTPUT"
+        continue-on-error: true
+
+      - name: Post plan comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const fs = require('fs');
+            const plan = fs.readFileSync('plan_output.txt', 'utf8');
+            const exitcode = '${{ steps.plan.outputs.exitcode }}';
+
+            let summary;
+            if (exitcode === '0') summary = '**No changes.** Infrastructure is up-to-date.';
+            else if (exitcode === '2') summary = '**Changes detected.** Review the plan below.';
+            else summary = '**Plan failed.** See details below.';
+
+            const body = `### Terraform Plan
+            ${summary}
+
+            <details><summary>Show plan output</summary>
+
+            \`\`\`
+            ${plan.substring(0, 65000)}
+            \`\`\`
+
+            </details>`;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const botComment = comments.find(c =>
+              c.user.type === 'Bot' && c.body.includes('### Terraform Plan')
+            );
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
+
+      - name: Fail on plan error
+        if: steps.plan.outputs.exitcode == '1'
+        run: exit 1
+
+  apply:
+    name: Terraform Apply
+    needs: plan
+    if: github.ref == 'refs/heads/main' && needs.plan.outputs.exitcode == '2'
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment || 'sandbox' }}
+    env:
+      ACCOUNT: ${{ inputs.environment || 'sandbox' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: '1.14.8'
+
+      - name: Terraform Init
+        run: make environmental-init ACCOUNT=${{ env.ACCOUNT }} AWS_PROFILE=
+
+      - name: Terraform Apply
+        run: make environmental-apply ACCOUNT=${{ env.ACCOUNT }} AWS_PROFILE= TF_FLAGS="-auto-approve"

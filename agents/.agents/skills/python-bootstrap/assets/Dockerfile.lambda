@@ -1,0 +1,18 @@
+FROM python:3.13-slim AS builder
+
+WORKDIR /build
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+COPY pyproject.toml uv.lock ./
+RUN uv export --frozen --no-dev --no-hashes -o requirements.txt && \
+    uv pip install --target /build/deps -r requirements.txt
+
+COPY src/ src/
+
+FROM public.ecr.aws/lambda/python:3.13
+
+COPY --from=builder /build/deps ${LAMBDA_TASK_ROOT}
+COPY src/{{PACKAGE_NAME}}/ ${LAMBDA_TASK_ROOT}/{{PACKAGE_NAME}}/
+
+CMD ["{{PACKAGE_NAME}}.handler.handler"]

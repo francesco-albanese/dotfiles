@@ -1,0 +1,32 @@
+personality = "pragmatic"
+model = "gpt-5.5"
+model_reasoning_effort = "xhigh"
+sandbox_mode = "workspace-write"
+
+[features]
+hooks = true
+
+[sandbox_workspace_write]
+network_access = true
+
+[shell_environment_policy.set]
+CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = "1"
+CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING = "1"
+MAX_THINKING_TOKENS = "128000"
+CLAUDE_CODE_EFFORT_LEVEL = "xhigh"
+
+[plugins."documents@openai-primary-runtime"]
+enabled = true
+
+[plugins."spreadsheets@openai-primary-runtime"]
+enabled = true
+
+[plugins."presentations@openai-primary-runtime"]
+enabled = true
+
+[plugins."browser-use@openai-bundled"]
+enabled = true
+
+[tui]
+status_line = ["model-with-reasoning", "current-dir", "model", "project-name", "git-branch", "permissions", "context-remaining", "context-used", "context-window-size", "used-tokens"]
+status_line_use_colors = true

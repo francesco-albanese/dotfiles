@@ -1,0 +1,25 @@
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Codex runtime/state
+codex/.codex/auth.json
+codex/.codex/history.jsonl
+codex/.codex/sessions/
+codex/.codex/log/
+codex/.codex/*.sqlite*
+codex/.codex/cache/
+codex/.codex/.tmp/
+codex/.codex/tmp/
+codex/.codex/plugins/cache/
+codex/.codex/shell_snapshots/
+codex/.codex/hooks/.venv-langfuse/
+
+# Local generated files
+**/__pycache__/
+**/.pytest_cache/
+**/.ruff_cache/
+**/.mypy_cache/
+**/.pyright/
+**/node_modules/

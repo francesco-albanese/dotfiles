@@ -1,0 +1,15 @@
+{
+  "name": "excalidraw-render",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "CLI helper for the /excalidraw skill: emits .excalidraw files from Mermaid or skeleton-JSON inputs.",
+  "bin": {
+    "excalidraw-render": "render.js"
+  },
+  "scripts": {
+    "start": "node render.js"
+  },
+  "dependencies": {},
+  "packageManager": "pnpm@9.0.0"
+}

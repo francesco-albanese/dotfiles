@@ -1,0 +1,15 @@
+# Centralized Terraform State Backend Configuration
+#
+# IMPORTANT: For GitHub OIDC + Cross-Account State Access
+# The shared-services terraform role (below) must trust all target account
+# terraform roles that will access this state via CI/CD pipelines.
+#
+# Flow: GitHub OIDC → Target account role → AssumeRole → Shared-services role → S3
+
+bucket       = "<STATE_BUCKET_NAME>"
+region       = "eu-west-2"
+use_lockfile = true
+encrypt      = true
+assume_role = {
+  role_arn = "arn:aws:iam::<SHARED_SERVICES_ACCOUNT_ID>:role/terraform"
+}
