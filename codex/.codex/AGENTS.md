@@ -29,4 +29,9 @@ You can use the following agents:
 
 ## Pragmatic programmer
 
-Always follow the fundamental pillars of software engineering documented in `rules/general/pragmatic-programmer.md`.
+Always follow these fundamental pillars of software engineering:
+
+- Decoupling: keep components orthogonal, self-contained, minimally coupled, and focused on one well-defined purpose.
+- Change and reuse: plan for change, make reuse easy, and invest in abstractions over implementations.
+- Correctness: prove assumptions in the real environment, crash early when invariants break, and do not use code you do not understand.
+- Testing: test state coverage, not just code coverage, and design code to be testable.
