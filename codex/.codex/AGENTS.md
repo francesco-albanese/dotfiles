@@ -29,9 +29,27 @@ You can use the following agents:
 
 ## Pragmatic programmer
 
-Always follow these fundamental pillars of software engineering:
+Universal engineering principles that apply to every project, stack, and language. Follow them at all times.
 
-- Decoupling: keep components orthogonal, self-contained, minimally coupled, and focused on one well-defined purpose.
-- Change and reuse: plan for change, make reuse easy, and invest in abstractions over implementations.
-- Correctness: prove assumptions in the real environment, crash early when invariants break, and do not use code you do not understand.
-- Testing: test state coverage, not just code coverage, and design code to be testable.
+### Decoupling
+
+- **Orthogonality** - reduce interdependency among components. Keep code decoupled, avoid global data, avoid similar functions.
+- **Minimise coupling between modules** - a change in one place should not ripple through unrelated code.
+- **Design components that are self-contained, independent, and with a single well-defined purpose.**
+
+### Change & Reuse
+
+- **Plan for change**
+- **Make it easy to reuse**
+- **Invest in the abstraction, not the implementation** - abstractions outlive any single implementation.
+
+### Correctness
+
+- **Don't assume it, prove it** - verify assumptions in the actual environment
+- **Crash early** - fail fast and loudly when an invariant breaks
+- **Don't use code you don't understand**
+
+### Testing
+
+- **Test state coverage, not code coverage**
+- **Design to test**
