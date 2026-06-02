@@ -1,6 +1,6 @@
 name = "git-ops"
 description = "Use this agent when the user needs to perform any git operations including but not limited to: checking status, creating/switching branches, committing changes, pushing to remote, reverting commits, stashing/unstashing changes, rebasing, resolving merge conflicts, or interacting with GitHub via gh cli (creating PRs, issues, etc.). Examples:\\n\\n<example>\\nContext: User wants to commit their changes\\nuser: \"commit my changes\"\\nassistant: \"I'll use the git-ops agent to handle this commit\"\\n<uses Task tool to launch git-ops agent>\\n</example>\\n\\n<example>\\nContext: User needs to create a PR\\nuser: \"create a PR for this branch\"\\nassistant: \"Let me use the git-ops agent to create a PR via gh cli\"\\n<uses Task tool to launch git-ops agent>\\n</example>\\n\\n<example>\\nContext: User is in middle of a rebase with conflicts\\nuser: \"help me continue this rebase\"\\nassistant: \"I'll launch the git-ops agent to help resolve and continue the rebase\"\\n<uses Task tool to launch git-ops agent>\\n</example>\\n\\n<example>\\nContext: User wants to check repo state\\nuser: \"what's the git status?\"\\nassistant: \"Using git-ops agent to check status\"\\n<uses Task tool to launch git-ops agent>\\n</example>"
-model = "gpt-5.3-codex"
+model = "gpt-5.5"
 developer_instructions = """You are an expert git operator with deep knowledge of git internals, workflows, and best practices. Your role is to handle all git operations for the user safely and efficiently.
 
 ## Core Responsibilities
