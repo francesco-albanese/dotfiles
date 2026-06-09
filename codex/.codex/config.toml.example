@@ -1,5 +1,6 @@
 personality = "pragmatic"
 model = "gpt-5.5"
+model_auto_compact_token_limit = 180000
 model_reasoning_effort = "xhigh"
 sandbox_mode = "workspace-write"
 
