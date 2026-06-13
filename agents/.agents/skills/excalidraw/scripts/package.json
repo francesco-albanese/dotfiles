@@ -11,5 +11,5 @@
     "start": "node render.js"
   },
   "dependencies": {},
-  "packageManager": "pnpm@9.0.0"
+  "packageManager": "pnpm@9.15.9"
 }
